@@ -43,16 +43,39 @@ class csvfile
     		fclose($handle);
 	  }
 		
-	foreach($records as $record) 
-	{
-    	foreach($record as $key => $value) 
+	  if(empty($_GET)) {
+	  	foreach($records as $record) {
+				  $i++;
+				$test_num = $i - 1;			
+			
+			// Making links to the file
+				 echo '<a href=' . '"http://localhost/is218/HW1.php?record=' . $test_num . '"' . '>test ' . $i . ' </a>';
+				echo '</p>';
+					
+			}
+		}	
+	  
+	  $record = $records[$_GET['record']];
+	  // Make the table
+	  	echo "<table border='1'>";
+      	foreach($record as $key => $value) 
     	{
-      		echo $key . ': ' . $value .  "</br> \n";
-    	}
-    	echo '<hr>';
-  	}
+		echo "<tr>";
+			
+			echo "<th> $key </th> <td> $value </td>";
+			echo "</tr>";
+
+
+			//echo '<td> $key . ': ' . $value .  </td>';
+			
+		}
+			
+			
+		echo "</table>";
 	
+	// close of the function 
 	}
+
 }
 /*	
 //*************
