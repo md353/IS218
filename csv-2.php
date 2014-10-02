@@ -42,6 +42,24 @@ class csvfile
 
     		fclose($handle);
 	  }
+/*
+	foreach($records as $record) {
+   		foreach($record as $key => $value) {
+   			//$i++;
+			//$record_num = $i - 1;
+		//$record = $records[$_GET[$record]];
+		//$sec_col = array_column($key, '1');
+		echo $sec_col;
+	//echo $key . ': ' . $value .  "</br> \n";
+    }
+	}
+
+    echo '<hr>';
+  }
+	}
+	
+*/		
+
 	if(empty($_GET)) 
 	{
 	foreach($records as $record) 
@@ -67,12 +85,13 @@ class csvfile
 	 		echo "</tr>";
     	}
 	  echo "</table>"; 
+
   	}
 	}
 //*************
 //	Entering new CSV file into function to read 
 //*************
 	$newfile = new csvfile();
-	$newfile->readcsv("hd2013.csv",TRUE);
+	$newfile->readcsv("hd2013xl.csv",TRUE);
 
 ?>
