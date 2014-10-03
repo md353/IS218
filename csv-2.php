@@ -15,8 +15,9 @@
 		// This function prints table from csv file by heading and data
 		public static function prTable($records,$uName){
 			if(isset($_GET[$uName])){
-				$csvFileFile2 = File::openFile('hd2013xl.csv');
-				$heads = readcsv::gtHeads($csvFileFile2,TRUE);
+				// callng class and function to open file & create table to be used later
+				$csvFile2 = File::openFile('hd2013xl.csv');
+				$heads = readcsv::gtHeads($csvFile2,TRUE);
 				echo '<table border="1">';
 				foreach($records[$_GET[$uName]] as $key => $value){
 					echo '<tr><th>' . $heads[$key] . '</th>';
@@ -42,7 +43,7 @@
 					echo'</p>';
 				}
 			}
-			// Is called to print table after links are pressed on	
+			// Is called to print table after links are pressed on like in cars.php
 			html_table::prTable($records, 'record');
 		}
 	}
@@ -68,7 +69,7 @@
 //********************************************	
 	class readcsv extends File{
 		
-		// This function is looking for headings to combine and place in array 
+		// This function is looking for headings 
 		public function column_headingCK($handle, $colmn_heads){
 			
 			while(($row = fgetcsv($handle, ",")) !== FALSE){
@@ -85,10 +86,9 @@
 		}
 		//...............................................................................
 		// This static function matches the headings from database Look alike headings to
-		// specific headings that are much more understandable
+		// specific headings that are much more understandable. Is used to replace colum heading
 		//...............................................................................
 		public static function gtHeads($handle, $colmn_heads){
-			$records = [];
 			while(($row = fgetcsv($handle)) !== FALSE){
 					
 					if($colmn_heads){
@@ -105,12 +105,14 @@
 				return $records;
 		}
 	}
-
+//-----------------------------------------------------------------------------------------------
 // The file is being set to a variable that then passes the class and function to open the file  
+//-----------------------------------------------------------------------------------------------
 $csvFile = 'hd2013.csv';
 $file = File::openFile($csvFile);
-
+//-------------------------------------------------------------------------------------
 // The file is then loaded up through calling a function and placing it into an array
+//-------------------------------------------------------------------------------------
 $handle = new readcsv();
 $records = $handle->column_headingCK($file, TRUE);
 //....................................................................
