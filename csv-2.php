@@ -1,48 +1,80 @@
 <?php
 
-//====================================================================
-//	Michael De La Cruz 
-//	IS218
-//	Challenge 1
-//====================================================================
+//====================================================================|
+//	Michael De La Cruz 												  |
+//	IS218															  |
+//	Challenge 1														  |
+//====================================================================|
 
-//********************************************
-//	Created a class for reading the CSV File
-//********************************************	
-		class File {
-	
-		public function __construct() {
-			
-		}
+//**********************************************************************************//
+//	Created a class to create & print a table from 									//
+//  the information extracted off the CSVfile										//
+//**********************************************************************************//
+	class html_table{
 		
+		// This function prints table from csv file by heading and data
+		public static function prTable($records,$uName){
+			if(isset($_GET[$uName])){
+				$csvFileFile2 = File::openFile('hd2013xl.csv');
+				$heads = readcsv::gtHeads($csvFileFile2,TRUE);
+				echo '<table border="1">';
+				foreach($records[$_GET[$uName]] as $key => $value){
+					echo '<tr><th>' . $heads[$key] . '</th>';
+					echo '<td>' . $value . '</td></tr>';
+				}
+				echo '</table>';
+			}
+		}
+	}
+//************************************************************************************//
+//	Created a class create HTML links based off the table created					  //
+//************************************************************************************//
+	class prLinks extends html_table{
+		
+		// This function has a constructor to print links when a new object is created and array passed	
+		public function __construct($records){
+			
+			$i = -1;
+			if(empty($_GET)){
+				foreach($records as $record){
+					$i++;
+					echo '<a href="?record=' .$i. '">' . $record['INSTNM'] . '</a>';
+					echo'</p>';
+				}
+			}
+			// Is called to print table after links are pressed on	
+			html_table::prTable($records, 'record');
+		}
+	}
+
+//********************************************//
+//	Created a class for opening the CSV File  //
+//********************************************//	
+	class File {
+		
+		//Function for opening a csv file for reading.	
 		public static function openFile($file){
 			$handle = fopen($file, "r");
-			//$handle2 = fopen($file2, "r");
-			// $handle = array_replace_recursive($handle1,$handle2);
-			//$handle = 
-			//$handle = array_replace($handle1[],$handle2);
-			return $handle ;
+			return $handle;
 		}
 		
+		// closing the file 
 		public static function closeFile($handle){
 			fclose($handle);
 		}
-		
 	}
-//***************************************************
-//	Created a class for checking the column headings 
-//***************************************************
-	class readcsv {
+//********************************************
+//	Created a class for reading the CSV File & setting headings
+//********************************************	
+	class readcsv extends File{
 		
-		public static $handle;
-		public static $colmn_headings;
-		
-		public function column_headingsCK($handle, $colmn_headings){
+		// This function is looking for headings to combine and place in array 
+		public function column_headingCK($handle, $colmn_heads){
 			
 			while(($row = fgetcsv($handle, ",")) !== FALSE){
-					if($colmn_headings){
+					if($colmn_heads){
 						$column_heading = $row;
-						$colmn_headings = FALSE;
+						$colmn_heads = FALSE;
 					}
 					else{
 						$record = array_combine($column_heading, $row);
@@ -51,58 +83,39 @@
 				}
 				return $records;
 		}
-		
-	}
-
-//**********************************************************************************
-//	Created a class to print a table from the information extracted off the CSVfile
-//**********************************************************************************
-	class html_table {
-		
-		public static function printTable($records,$url_var){
-			if(isset($_GET[$url_var])){
-				echo '<table border="1">';
-				foreach($records[$_GET[$url_var]] as $key => $value){
+		//...............................................................................
+		// This static function matches the headings from database Look alike headings to
+		// specific headings that are much more understandable
+		//...............................................................................
+		public static function gtHeads($handle, $colmn_heads){
+			$records = [];
+			while(($row = fgetcsv($handle)) !== FALSE){
 					
-					echo '<tr><th>' . $key . '</th>';
-					echo '<td>' . $value . '</td></tr>';
+					if($colmn_heads){
+						$column_heading = $row;
+						$colmn_heads = FALSE;
+					}
+					else{
+						$record = array_combine($column_heading, $row);
+						$records[$record['varname']] = $record['varTitle'];
+					}	
+					
 				}
-					echo '</table>';
-			}
+				
+				return $records;
 		}
 	}
-	///class change extends html_table{
-	///	pblic static function 
-	//}
-//******************************************************
-//	Created a class create HTML links based off the class 
-//******************************************************
-	class pLinks extends html_table {
-		
-		public function __construct($records){
-			
-			$i = -1;
-			if(empty($_GET)){
-				foreach($records as $record){
-					$i++;
-				    echo '<a href="?record=' .$i. '">' . $record['INSTNM'] . '</a>';
-					echo'</p>';
-				}
-			}
-			
-			html_table::printTable($records, 'record');
-		}
-		//public function __destruct($records){
-			//html_table::printTable($records, 'record');
-		//}
-	}
-	
-$csv = 'hd2013.csv';
-$file = File::openFile($csv);
 
+// The file is being set to a variable that then passes the class and function to open the file  
+$csvFile = 'hd2013.csv';
+$file = File::openFile($csvFile);
+
+// The file is then loaded up through calling a function and placing it into an array
 $handle = new readcsv();
-$records = $handle->column_headingsCK($file, TRUE);
-
-new pLinks($records);
+$records = $handle->column_headingCK($file, TRUE);
+//....................................................................
+// Links are then printed when object is instantiated by the "new"
+//.....................................................................
+new prLinks($records);
 
 ?>
