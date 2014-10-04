@@ -17,7 +17,7 @@
 			if(isset($_GET[$uName])){
 				// callng class and function to open file & create table to be used later
 				$csvFile2 = File::openFile('hd2013xl.csv');
-				$heads = readcsv::gtHeads($csvFile2,TRUE);
+				$heads = readcsv2::gtHeads($csvFile2,TRUE);
 				echo '<table border="1">';
 				foreach($records[$_GET[$uName]] as $key => $value){
 					echo '<tr><th>' . $heads[$key] . '</th>';
@@ -84,11 +84,14 @@
 				}
 				return $records;
 		}
+	}
+	class readcsv2 extends File{
 		//...............................................................................
 		// This static function matches the headings from database Look alike headings to
-		// specific headings that are much more understandable. Is used to replace colum heading
+		// specific headings that are much more understandable. is used to replace column heading
 		//...............................................................................
 		public static function gtHeads($handle, $colmn_heads){
+			$records = [];
 			while(($row = fgetcsv($handle)) !== FALSE){
 					
 					if($colmn_heads){
@@ -105,6 +108,7 @@
 				return $records;
 		}
 	}
+
 //-----------------------------------------------------------------------------------------------
 // The file is being set to a variable that then passes the class and function to open the file  
 //-----------------------------------------------------------------------------------------------
